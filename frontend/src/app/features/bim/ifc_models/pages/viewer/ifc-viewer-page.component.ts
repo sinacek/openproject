@@ -40,11 +40,11 @@ import {
 import { WorkPackageFilterButtonComponent } from 'core-app/features/work-packages/components/wp-buttons/wp-filter-button/wp-filter-button.component';
 import { ZenModeButtonComponent } from 'core-app/features/work-packages/components/wp-buttons/zen-mode-toggle-button/zen-mode-toggle-button.component';
 import {
-  bimSplitViewCardsIdentifier,
-  bimViewerViewIdentifier,
-  BimViewService,
-} from 'core-app/features/bim/ifc_models/pages/viewer/bim-view.service';
-import { BimViewToggleButtonComponent } from 'core-app/features/bim/ifc_models/toolbar/view-toggle/bim-view-toggle-button.component';
+  bcfSplitViewCardsIdentifier,
+  bcfViewerViewIdentifier,
+  BcfViewService,
+} from 'core-app/features/bim/ifc_models/pages/viewer/bcf-view.service';
+import { BcfViewToggleButtonComponent } from 'core-app/features/bim/ifc_models/toolbar/view-toggle/bcf-view-toggle-button.component';
 import { IfcModelsDataService } from 'core-app/features/bim/ifc_models/pages/viewer/ifc-models-data.service';
 import { QueryParamListenerService } from 'core-app/features/work-packages/components/wp-query/query-param-listener.service';
 import { BimManageIfcModelsButtonComponent } from 'core-app/features/bim/ifc_models/toolbar/manage-ifc-models-button/bim-manage-ifc-models-button.component';
@@ -66,7 +66,7 @@ import { QueryResource } from 'core-app/features/hal/resources/query-resource';
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    BimViewService,
+    BcfViewService,
     QueryParamListenerService,
   ],
 })
@@ -102,10 +102,10 @@ export class IFCViewerPageComponent extends PartitionedQuerySpacePageComponent i
     },
     {
       component: WorkPackageFilterButtonComponent,
-      show: ():boolean => this.bimView.currentViewerState() !== bimViewerViewIdentifier,
+      show: ():boolean => this.bcfView.currentViewerState() !== 'viewer',
     },
     {
-      component: BimViewToggleButtonComponent,
+      component: BcfViewToggleButtonComponent,
       containerClasses: 'hidden-for-mobile',
     },
     {
@@ -121,7 +121,7 @@ export class IFCViewerPageComponent extends PartitionedQuerySpacePageComponent i
   ];
 
   constructor(readonly ifcData:IfcModelsDataService,
-    readonly bimView:BimViewService,
+    readonly bcfView:BcfViewService,
     readonly injector:Injector,
     readonly viewerBridgeService:ViewerBridgeService) {
     super(injector);
@@ -130,7 +130,7 @@ export class IFCViewerPageComponent extends PartitionedQuerySpacePageComponent i
   ngOnInit():void {
     super.ngOnInit();
 
-    this.setupChangeObserver(this.bimView);
+    this.setupChangeObserver(this.bcfView);
 
     // Add bcf thumbnail to wp table per default, once the columns are available
     this.wpTableColumns.querySpace.available.columns.values$()
@@ -142,19 +142,19 @@ export class IFCViewerPageComponent extends PartitionedQuerySpacePageComponent i
     this.querySpace.query.values$()
       .pipe(this.untilDestroyed())
       .subscribe((query) => {
-        const dr = query.displayRepresentation || bimSplitViewCardsIdentifier;
-        this.filterAllowed = dr !== bimViewerViewIdentifier;
+        const dr = query.displayRepresentation || bcfSplitViewCardsIdentifier;
+        this.filterAllowed = dr !== bcfViewerViewIdentifier;
         this.cdRef.detectChanges();
       });
   }
 
   /**
-   * Initialize the BimViewService when the query of the isolated space is loaded
+   * Initialize the BcfViewService when the query of the isolated space is loaded
    */
   public loadQuery(firstPage = false):Promise<QueryResource> {
     return super.loadQuery(firstPage)
       .then((query) => {
-        this.bimView.initialize(query, query.results);
+        this.bcfView.initialize(query, query.results);
         return query;
       });
   }

@@ -32,16 +32,16 @@ import { WorkPackageQueryStateService } from 'core-app/features/work-packages/ro
 import { IsolatedQuerySpace } from 'core-app/features/work-packages/directives/query-space/isolated-query-space';
 import { QueryResource } from 'core-app/features/hal/resources/query-resource';
 
-export const bimCardsViewIdentifier = 'cards';
-export const bimViewerViewIdentifier = 'viewer';
-export const bimSplitViewTableIdentifier = 'splitTable';
-export const bimSplitViewCardsIdentifier = 'splitCards';
-export const bimTableViewIdentifier = 'table';
+export const bcfCardsViewIdentifier = 'cards';
+export const bcfViewerViewIdentifier = 'viewer';
+export const bcfSplitViewTableIdentifier = 'splitTable';
+export const bcfSplitViewCardsIdentifier = 'splitCards';
+export const bcfTableViewIdentifier = 'table';
 
-export type BimViewState = 'cards'|'viewer'|'splitTable'|'splitCards'|'table';
+export type BcfViewState = 'cards'|'viewer'|'splitTable'|'splitCards'|'table';
 
 @Injectable()
-export class BimViewService extends WorkPackageQueryStateService<BimViewState> {
+export class BcfViewService extends WorkPackageQueryStateService<BcfViewState> {
   public text:{ [key:string]:string } = {
     cards: this.I18n.t('js.views.card'),
     viewer: this.I18n.t('js.ifc_models.views.viewer'),
@@ -75,22 +75,22 @@ export class BimViewService extends WorkPackageQueryStateService<BimViewState> {
     return true;
   }
 
-  public valueFromQuery(query:QueryResource):BimViewState|undefined {
+  public valueFromQuery(query:QueryResource):BcfViewState|undefined {
     const dr = query.displayRepresentation;
 
     switch (dr) {
-      case bimSplitViewCardsIdentifier:
-      case bimSplitViewTableIdentifier:
-      case bimCardsViewIdentifier:
-      case bimTableViewIdentifier:
-      case bimViewerViewIdentifier:
+      case 'splitCards':
+      case 'splitTable':
+      case 'cards':
+      case 'table':
+      case 'viewer':
         return dr;
       default:
-        return bimSplitViewCardsIdentifier;
+        return 'splitCards';
     }
   }
 
-  public currentViewerState():BimViewState|undefined {
+  public currentViewerState():BcfViewState|undefined {
     return this.current;
   }
 }

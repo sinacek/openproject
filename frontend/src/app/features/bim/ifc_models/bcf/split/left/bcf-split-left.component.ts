@@ -32,27 +32,23 @@ import {
   OnInit,
 } from '@angular/core';
 import { Observable } from 'rxjs';
-import {
-  bimSplitViewCardsIdentifier,
-  bimSplitViewTableIdentifier,
-  BimViewService,
-} from 'core-app/features/bim/ifc_models/pages/viewer/bim-view.service';
 import { map } from 'rxjs/operators';
+import { BcfViewService } from 'core-app/features/bim/ifc_models/pages/viewer/bcf-view.service';
 
 @Component({
-  templateUrl: './bcf-split-right.component.html',
+  templateUrl: './bcf-split-left.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'op-bcf-content-right',
+  selector: 'op-bcf-content-left',
 })
-export class BcfSplitRightComponent implements OnInit {
-  showWorkPackages$:Observable<boolean>;
+export class BcfSplitLeftComponent implements OnInit {
+  showViewer$:Observable<boolean>;
 
-  constructor(private readonly bimView:BimViewService) {}
+  constructor(private readonly bcfView:BcfViewService) {}
 
   ngOnInit():void {
-    this.showWorkPackages$ = this.bimView.live$()
+    this.showViewer$ = this.bcfView.live$()
       .pipe(
-        map((state) => state === bimSplitViewTableIdentifier || state === bimSplitViewCardsIdentifier),
+        map((state) => state !== 'cards' && state !== 'table'),
       );
   }
 }

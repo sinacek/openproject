@@ -32,24 +32,24 @@ import { OpContextMenuTrigger } from 'core-app/shared/components/op-context-menu
 import { I18nService } from 'core-app/core/i18n/i18n.service';
 import { StateService } from '@uirouter/core';
 import {
-  bimCardsViewIdentifier,
-  bimSplitViewCardsIdentifier,
-  bimSplitViewTableIdentifier,
-  bimTableViewIdentifier,
-  bimViewerViewIdentifier,
-  BimViewService,
-} from 'core-app/features/bim/ifc_models/pages/viewer/bim-view.service';
+  bcfCardsViewIdentifier,
+  bcfSplitViewCardsIdentifier,
+  bcfSplitViewTableIdentifier,
+  bcfTableViewIdentifier,
+  bcfViewerViewIdentifier,
+  BcfViewService,
+} from 'core-app/features/bim/ifc_models/pages/viewer/bcf-view.service';
 import { ViewerBridgeService } from 'core-app/features/bim/bcf/bcf-viewer-bridge/viewer-bridge.service';
 import { WorkPackageFiltersService } from 'core-app/features/work-packages/components/filters/wp-filters/wp-filters.service';
 import { OpContextMenuItem } from 'core-app/shared/components/op-context-menu/op-context-menu.types';
 
 @Directive({
-  selector: '[opBimViewDropdown]',
+  selector: '[opBcfViewDropdown]',
 })
-export class BimViewToggleDropdownDirective extends OpContextMenuTrigger {
+export class BcfViewToggleDropdownDirective extends OpContextMenuTrigger {
   constructor(readonly elementRef:ElementRef,
     readonly opContextMenu:OPContextMenuService,
-    readonly bimView:BimViewService,
+    readonly bcfView:BcfViewService,
     readonly I18n:I18nService,
     readonly state:StateService,
     readonly wpFiltersService:WorkPackageFiltersService,
@@ -71,14 +71,14 @@ export class BimViewToggleDropdownDirective extends OpContextMenuTrigger {
 
   private buildItems() {
     const items = this.viewerBridgeService.shouldShowViewer
-      ? [bimViewerViewIdentifier, bimCardsViewIdentifier, bimSplitViewCardsIdentifier, bimSplitViewTableIdentifier, bimTableViewIdentifier]
-      : [bimCardsViewIdentifier, bimTableViewIdentifier];
+      ? [bcfViewerViewIdentifier, bcfCardsViewIdentifier, bcfSplitViewCardsIdentifier, bcfSplitViewTableIdentifier, bcfTableViewIdentifier]
+      : [bcfCardsViewIdentifier, bcfTableViewIdentifier];
 
     this.items = items
       .map((key) => ({
-        hidden: key === this.bimView.currentViewerState(),
-        linkText: this.bimView.text[key],
-        icon: this.bimView.icon[key],
+        hidden: key === this.bcfView.currentViewerState(),
+        linkText: this.bcfView.text[key],
+        icon: this.bcfView.icon[key],
         onClick: () => {
           // Close filter section
           if (this.wpFiltersService.visible) {
@@ -86,12 +86,12 @@ export class BimViewToggleDropdownDirective extends OpContextMenuTrigger {
           }
 
           switch (key) {
-            case bimCardsViewIdentifier:
-            case bimTableViewIdentifier:
-            case bimViewerViewIdentifier:
-            case bimSplitViewCardsIdentifier:
-            case bimSplitViewTableIdentifier:
-              this.bimView.update(key);
+            case 'cards':
+            case 'table':
+            case 'viewer':
+            case 'splitCards':
+            case 'splitTable':
+              this.bcfView.update(key);
               break;
             default:
           }

@@ -24,7 +24,7 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
 // See COPYRIGHT and LICENSE files for more details.
-//+
+//++
 
 import {
   ChangeDetectionStrategy,
@@ -32,27 +32,23 @@ import {
   OnInit,
 } from '@angular/core';
 import { Observable } from 'rxjs';
+import { BcfViewService } from 'core-app/features/bim/ifc_models/pages/viewer/bcf-view.service';
 import { map } from 'rxjs/operators';
-import {
-  bimCardsViewIdentifier,
-  bimTableViewIdentifier,
-  BimViewService,
-} from 'core-app/features/bim/ifc_models/pages/viewer/bim-view.service';
 
 @Component({
-  templateUrl: './bcf-split-left.component.html',
+  templateUrl: './bcf-split-right.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'op-bcf-content-left',
+  selector: 'op-bcf-content-right',
 })
-export class BcfSplitLeftComponent implements OnInit {
-  showViewer$:Observable<boolean>;
+export class BcfSplitRightComponent implements OnInit {
+  showWorkPackages$:Observable<boolean>;
 
-  constructor(private readonly bimView:BimViewService) {}
+  constructor(private readonly bcfView:BcfViewService) {}
 
   ngOnInit():void {
-    this.showViewer$ = this.bimView.live$()
+    this.showWorkPackages$ = this.bcfView.live$()
       .pipe(
-        map((state) => state !== bimCardsViewIdentifier && state !== bimTableViewIdentifier),
+        map((state) => state === 'splitTable' || state === 'splitCards'),
       );
   }
 }

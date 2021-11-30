@@ -50,13 +50,7 @@ import { BcfAuthorizationService } from 'core-app/features/bim/bcf/api/bcf-autho
 import { ViewpointsService } from 'core-app/features/bim/bcf/helper/viewpoints.service';
 import { BcfViewpointItem } from 'core-app/features/bim/bcf/api/viewpoints/bcf-viewpoint-item.interface';
 import { APIV3Service } from 'core-app/core/apiv3/api-v3.service';
-import {
-  bimCardsViewIdentifier,
-  bimSplitViewCardsIdentifier,
-  bimSplitViewTableIdentifier,
-  bimTableViewIdentifier,
-  BimViewService,
-} from 'core-app/features/bim/ifc_models/pages/viewer/bim-view.service';
+import { BcfViewService } from 'core-app/features/bim/ifc_models/pages/viewer/bcf-view.service';
 
 @Component({
   templateUrl: './bcf-wp-attribute-group.component.html',
@@ -155,7 +149,7 @@ export class BcfWpAttributeGroupComponent extends UntilDestroyedMixin implements
     readonly apiV3Service:APIV3Service,
     readonly wpCreate:WorkPackageCreateService,
     readonly toastService:ToastService,
-    readonly bimViewer:BimViewService,
+    readonly bcfViewer:BcfViewService,
     readonly cdRef:ChangeDetectorRef,
     readonly I18n:I18nService,
     readonly viewpointsService:ViewpointsService) {
@@ -214,12 +208,12 @@ export class BcfWpAttributeGroupComponent extends UntilDestroyedMixin implements
   }
 
   protected showViewpoint(workPackage:WorkPackageResource, index:number):void {
-    switch (this.bimViewer.currentViewerState()) {
-      case bimTableViewIdentifier:
-        this.bimViewer.update(bimSplitViewTableIdentifier);
+    switch (this.bcfViewer.currentViewerState()) {
+      case 'table':
+        this.bcfViewer.update('splitTable');
         break;
-      case bimCardsViewIdentifier:
-        this.bimViewer.update(bimSplitViewCardsIdentifier);
+      case 'cards':
+        this.bcfViewer.update('splitCards');
         break;
       default:
     }

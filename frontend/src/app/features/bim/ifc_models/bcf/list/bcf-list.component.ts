@@ -34,12 +34,7 @@ import { HalResourceNotificationService } from 'core-app/features/hal/services/h
 import { WorkPackageNotificationService } from 'core-app/features/work-packages/services/notifications/work-package-notification.service';
 import { DragAndDropService } from 'core-app/shared/helpers/drag-and-drop/drag-and-drop.service';
 import { CausedUpdatesService } from 'core-app/features/boards/board/caused-updates/caused-updates.service';
-import {
-  bimSplitViewCardsIdentifier,
-  bimSplitViewTableIdentifier,
-  bimTableViewIdentifier,
-  BimViewService,
-} from 'core-app/features/bim/ifc_models/pages/viewer/bim-view.service';
+import { BcfViewService } from 'core-app/features/bim/ifc_models/pages/viewer/bcf-view.service';
 import { InjectField } from 'core-app/shared/helpers/angular/inject-field.decorator';
 import { IfcModelsDataService } from 'core-app/features/bim/ifc_models/pages/viewer/ifc-models-data.service';
 import { WorkPackageViewColumnsService } from 'core-app/features/work-packages/routing/wp-view-base/view-services/wp-view-columns.service';
@@ -52,8 +47,8 @@ import { UntilDestroyedMixin } from 'core-app/shared/helpers/angular/until-destr
 import { QueryResource } from 'core-app/features/hal/resources/query-resource';
 
 @Component({
-  templateUrl: './bcf-list-container.component.html',
-  styleUrls: ['./bcf-list-container.component.sass'],
+  templateUrl: './bcf-list.component.html',
+  styleUrls: ['./bcf-list.component.sass'],
   providers: [
     { provide: HalResourceNotificationService, useClass: WorkPackageNotificationService },
     DragAndDropService,
@@ -62,10 +57,10 @@ import { QueryResource } from 'core-app/features/hal/resources/query-resource';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'op-bcf-list',
 })
-export class BcfListContainerComponent extends WorkPackageListViewComponent implements UntilDestroyedMixin, OnInit {
+export class BcfListComponent extends WorkPackageListViewComponent implements UntilDestroyedMixin, OnInit {
   @Input() showResizer = false;
 
-  @InjectField() bimView:BimViewService;
+  @InjectField() bcfView:BcfViewService;
 
   @InjectField() ifcModelsService:IfcModelsDataService;
 
@@ -92,9 +87,9 @@ export class BcfListContainerComponent extends WorkPackageListViewComponent impl
   }
 
   protected updateViewRepresentation(query:QueryResource):void {
-    const viewerState = this.bimView.valueFromQuery(query);
+    const viewerState = this.bcfView.valueFromQuery(query);
     this.showTableView = !this.deviceService.isMobile
-      && (viewerState === bimTableViewIdentifier || viewerState === bimSplitViewTableIdentifier);
+      && (viewerState === 'table' || viewerState === 'splitTable');
   }
 
   public showResizerInCardView():boolean {
@@ -102,8 +97,8 @@ export class BcfListContainerComponent extends WorkPackageListViewComponent impl
       return false;
     }
 
-    return this.bimView.currentViewerState() === bimSplitViewCardsIdentifier
-      || this.bimView.currentViewerState() === bimSplitViewTableIdentifier;
+    return this.bcfView.currentViewerState() === 'splitCards'
+      || this.bcfView.currentViewerState() === 'splitTable';
   }
 
   handleWorkPackageClicked(event:{ workPackageId:string; double:boolean }):void {

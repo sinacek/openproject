@@ -32,8 +32,8 @@ import { makeSplitViewRoutes } from 'core-app/features/work-packages/routing/spl
 import { WorkPackageSplitViewComponent } from 'core-app/features/work-packages/routing/wp-split-view/wp-split-view.component';
 import { WorkPackageNewFullViewComponent } from 'core-app/features/work-packages/components/wp-new/wp-new-full-view.component';
 import { WorkPackagesBaseComponent } from 'core-app/features/work-packages/routing/wp-base/wp--base.component';
-import { BcfSplitLeftComponent } from 'core-app/features/bim/ifc_models/bcf-split/left/bcf-split-left.component';
-import { BcfSplitRightComponent } from 'core-app/features/bim/ifc_models/bcf-split/right/bcf-split-right.component';
+import { BcfSplitLeftComponent } from 'core-app/features/bim/ifc_models/bcf/split/left/bcf-split-left.component';
+import { BcfSplitRightComponent } from 'core-app/features/bim/ifc_models/bcf/split/right/bcf-split-right.component';
 
 export const IFC_ROUTES:Ng2StateDeclaration[] = [
   {
