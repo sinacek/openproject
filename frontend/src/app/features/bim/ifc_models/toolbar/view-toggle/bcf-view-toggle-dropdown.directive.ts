@@ -65,7 +65,7 @@ export class BcfViewToggleDropdownDirective extends OpContextMenuTrigger {
   public get locals():{ showAnchorRight?:boolean, contextMenuId?:string, items:OpContextMenuItem[] } {
     return {
       items: this.items,
-      contextMenuId: 'bim-view-context-menu',
+      contextMenuId: 'bcf-view-context-menu',
     };
   }
 

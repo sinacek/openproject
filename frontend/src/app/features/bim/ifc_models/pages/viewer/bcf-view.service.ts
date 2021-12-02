@@ -31,6 +31,7 @@ import { I18nService } from 'core-app/core/i18n/i18n.service';
 import { WorkPackageQueryStateService } from 'core-app/features/work-packages/routing/wp-view-base/view-services/wp-view-base.service';
 import { IsolatedQuerySpace } from 'core-app/features/work-packages/directives/query-space/isolated-query-space';
 import { QueryResource } from 'core-app/features/hal/resources/query-resource';
+import { ViewerBridgeService } from 'core-app/features/bim/bcf/bcf-viewer-bridge/viewer-bridge.service';
 
 export const bcfCardsViewIdentifier = 'cards';
 export const bcfViewerViewIdentifier = 'viewer';
@@ -60,6 +61,7 @@ export class BcfViewService extends WorkPackageQueryStateService<BcfViewState> {
 
   constructor(
     private readonly I18n:I18nService,
+    private readonly viewerBridgeService:ViewerBridgeService,
     protected readonly querySpace:IsolatedQuerySpace,
   ) {
     super(querySpace);
@@ -86,7 +88,7 @@ export class BcfViewService extends WorkPackageQueryStateService<BcfViewState> {
       case 'viewer':
         return dr;
       default:
-        return 'splitCards';
+        return this.viewerBridgeService.shouldShowViewer ? 'splitCards' : 'cards';
     }
   }
 

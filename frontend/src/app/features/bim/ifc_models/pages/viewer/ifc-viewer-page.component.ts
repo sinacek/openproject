@@ -78,11 +78,15 @@ export class IFCViewerPageComponent extends PartitionedQuerySpacePageComponent i
     areYouSure: this.I18n.t('js.text_are_you_sure'),
   };
 
+  private readonly newRoute = this.viewerBridgeService.shouldShowViewer
+    ? 'bim.partitioned.list.new'
+    : 'bim.partitioned.new';
+
   toolbarButtonComponents:ToolbarButtonComponentDefinition[] = [
     {
       component: WorkPackageCreateButtonComponent,
       inputs: {
-        stateName$: of('bim.partitioned.list.new'),
+        stateName$: of(this.newRoute),
         allowed: ['work_packages.createWorkPackage', 'work_package.copy'],
       },
     },
