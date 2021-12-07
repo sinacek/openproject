@@ -31,6 +31,7 @@ require_relative '../../spec_helper'
 describe 'Show viewpoint in model viewer',
          with_config: { edition: 'bim' },
          type: :feature,
+         driver: :firefox_en,
          js: true do
   let(:project) do
     FactoryBot.create(:project,
@@ -117,7 +118,7 @@ describe 'Show viewpoint in model viewer',
         bcf_details.expect_viewpoint_count(1)
         bcf_details.show_current_viewpoint
 
-        path = Regexp.escape("bcf/split/details/#{work_package.id}/overview")
+        path = Regexp.escape("bcf/details/#{work_package.id}/overview")
         expect(page).to have_current_path /#{path}/
 
         expect(page).to have_current_path /#{project.id}/

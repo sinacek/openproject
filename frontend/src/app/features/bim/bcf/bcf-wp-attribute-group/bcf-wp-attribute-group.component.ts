@@ -34,6 +34,7 @@ import {
   Input,
   OnDestroy,
   OnInit,
+  Optional,
   ViewChild,
 } from '@angular/core';
 import { StateService } from '@uirouter/core';
@@ -51,6 +52,8 @@ import { ViewpointsService } from 'core-app/features/bim/bcf/helper/viewpoints.s
 import { BcfViewpointItem } from 'core-app/features/bim/bcf/api/viewpoints/bcf-viewpoint-item.interface';
 import { APIV3Service } from 'core-app/core/apiv3/api-v3.service';
 import { BcfViewService } from 'core-app/features/bim/ifc_models/pages/viewer/bcf-view.service';
+import { filter, take } from 'rxjs/operators';
+import { PathHelperService } from 'core-app/core/path-helper/path-helper.service';
 
 @Component({
   templateUrl: './bcf-wp-attribute-group.component.html',
@@ -149,7 +152,7 @@ export class BcfWpAttributeGroupComponent extends UntilDestroyedMixin implements
     readonly apiV3Service:APIV3Service,
     readonly wpCreate:WorkPackageCreateService,
     readonly toastService:ToastService,
-    readonly bcfViewer:BcfViewService,
+    @Optional() readonly bcfViewer:BcfViewService,
     readonly cdRef:ChangeDetectorRef,
     readonly I18n:I18nService,
     readonly viewpointsService:ViewpointsService) {
@@ -208,20 +211,33 @@ export class BcfWpAttributeGroupComponent extends UntilDestroyedMixin implements
   }
 
   protected showViewpoint(workPackage:WorkPackageResource, index:number):void {
-    switch (this.bcfViewer.currentViewerState()) {
-      case 'table':
-        this.bcfViewer.update('splitTable');
-        break;
-      case 'cards':
-        this.bcfViewer.update('splitCards');
-        break;
-      default:
-    }
+    if (this.bcfViewer) {
+      // FIXME: This component shouldn't know about the state of the BCF module. bcfViewer is null, when outside of
+      //  BCF module. Inside BCF module, we try to avoid hard transition, with sending an update to the bcf view
+      //  state before showing a viewpoint.
+      switch (this.bcfViewer.currentViewerState()) {
+        case 'table':
+          this.bcfViewer.update('splitTable');
+          break;
+        case 'cards':
+          this.bcfViewer.update('splitCards');
+          break;
+        default:
+      }
 
-    this.viewerBridge.showViewpoint(workPackage, index);
+      // wait until viewer is visible after view state update before showing viewpoint
+      this.viewerBridge.viewerVisible$
+        .pipe(
+          filter((visible) => visible),
+          take(1),
+        )
+        .subscribe(() => this.viewerBridge.showViewpoint(workPackage, index));
+    } else {
+      this.viewerBridge.showViewpoint(workPackage, index);
+    }
   }
 
-  protected deleteViewpoint(workPackage:WorkPackageResource, index:number) {
+  protected deleteViewpoint(workPackage:WorkPackageResource, index:number):void {
     if (!window.confirm(this.text.text_are_you_sure)) {
       return;
     }

@@ -40,6 +40,8 @@ import { HttpClient } from '@angular/common/http';
 import { IfcProjectDefinition } from 'core-app/features/bim/ifc_models/pages/viewer/ifc-models-data.service';
 import { BIMViewer } from '@xeokit/xeokit-bim-viewer/dist/xeokit-bim-viewer.es';
 import { BcfViewpointData, CreateBcfViewpointData } from 'core-app/features/bim/bcf/api/bcf-api.model';
+import { HalResource } from 'core-app/features/hal/resources/hal-resource';
+import idFromLink from 'core-app/features/hal/helpers/id-from-link';
 
 export interface XeokitElements {
   canvasElement:HTMLElement;
@@ -170,7 +172,7 @@ export class IFCViewerService extends ViewerBridgeService {
   }
 
   public destroy():void {
-    this.viewerVisible$.complete();
+    this.viewerVisible$.next(false);
 
     if (!this.viewer) {
       return;
@@ -207,10 +209,23 @@ export class IFCViewerService extends ViewerBridgeService {
   }
 
   public showViewpoint(workPackage:WorkPackageResource, index:number):void {
-    const opts:BCFLoadOptions = { updateCompositeObjects: true, reverseClippingPlanes: true };
-    this.viewpointsService
-      .getViewPoint$(workPackage, index)
-      .subscribe((viewpoint) => this.viewer?.loadBCFViewpoint(viewpoint, opts));
+    if (this.viewerVisible()) {
+      const opts:BCFLoadOptions = { updateCompositeObjects: true, reverseClippingPlanes: true };
+      this.viewpointsService
+        .getViewPoint$(workPackage, index)
+        .subscribe((viewpoint) => {
+          this.viewer?.loadBCFViewpoint(viewpoint, opts);
+        });
+    } else {
+      // FIXME: When triggering showViewpoint from anywhere outside BCF module, there is no viewer shown and we have
+      //  no means of setting it from here. Hence we must make a hard transition to bcf details route of the
+      //  current work package.
+      window.location.href = this.pathHelper.bimDetailsPath(
+        idFromLink((workPackage.project as HalResource).href),
+        workPackage.id || '',
+        index,
+      );
+    }
   }
 
   public viewerVisible():boolean {

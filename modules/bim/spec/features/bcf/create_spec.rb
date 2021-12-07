@@ -146,7 +146,7 @@ describe 'Create BCF',
 
       before do
         visit bcf_project_frontend_path(project, "details/#{work_package.id}")
-        expect(page).to have_current_path /\/bcf\/details/, ignore_query: true
+        index_page.expect_details_path
       end
 
       it_behaves_like 'bcf details creation', true

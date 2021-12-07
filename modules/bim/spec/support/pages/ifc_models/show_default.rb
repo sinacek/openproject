@@ -49,6 +49,10 @@ module Pages
         finished_loading
       end
 
+      def expect_details_path
+        expect(page).to have_current_path /\/bcf\/details/, ignore_query: true
+      end
+
       def finished_loading
         expect(page).to have_selector('.xeokit-busy-modal', visible: :all, wait: 30)
       end
