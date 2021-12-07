@@ -31,7 +31,6 @@ require_relative '../../spec_helper'
 describe 'Show viewpoint in model viewer',
          with_config: { edition: 'bim' },
          type: :feature,
-         driver: :firefox_en,
          js: true do
   let(:project) do
     FactoryBot.create(:project,

@@ -53,7 +53,6 @@ import { BcfViewpointItem } from 'core-app/features/bim/bcf/api/viewpoints/bcf-v
 import { APIV3Service } from 'core-app/core/apiv3/api-v3.service';
 import { BcfViewService } from 'core-app/features/bim/ifc_models/pages/viewer/bcf-view.service';
 import { filter, take } from 'rxjs/operators';
-import { PathHelperService } from 'core-app/core/path-helper/path-helper.service';
 
 @Component({
   templateUrl: './bcf-wp-attribute-group.component.html',
